@@ -1,0 +1,53 @@
+local socket = require("socket")
+local http = require("socket.http")
+local ltn12 = require("ltn12")
+local json = require('cjson')
+local base64 = require("base64")
+http.TIMEOUT = 5
+
+
+core.register_action("auth-request", { "http-req" }, function(txn, addr, path)
+        txn:set_var("txn.auth_response_successful", false)
+
+	local headers = {}
+	creds = {}
+        local response_body = {}
+	local hdr = txn.http:req_get_headers()
+	authheader = hdr["authorization"][0]
+	local basicb64 = string.sub(authheader, 7)
+        local base64decoded = base64.decode(basicb64)
+        
+	for user_name, user_password in string.gmatch(base64decoded, "(%w+):(%w+)") do
+		creds['user'] = user_name
+		creds['pass'] = user_password
+	end
+
+        local response_body = {}
+        local res, code, response_headers = http.request{
+        url = "http://" .. addr .. path,
+        method = "GET",
+	headers = { ["X-Vault-Token"] = VAULT_TOKEN;
+                 },
+        sink=ltn12.sink.table(response_body),
+        core.tcp,
+        }
+
+if type(response_body) == "table" then
+    data = json.decode(table.concat(response_body))
+    result = VAULT_CRED_JSON
+else
+    print('vault error: check the vault response')
+end
+
+
+if ( result == creds['pass'] )
+
+then
+	print('vault info: access granted for user ' .. creds['user'])
+	txn:set_var("txn.auth_response_successful", true)
+else
+	print('vault info: access denied for user ' .. creds['user'])
+	txn:set_var("txn.auth_response_successful", false)
+end
+ 
+end, 2)

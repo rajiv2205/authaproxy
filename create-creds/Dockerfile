@@ -1,0 +1,2 @@
+FROM curlimages/curl
+COPY . .

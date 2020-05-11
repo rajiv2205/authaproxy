@@ -1,0 +1,30 @@
+global
+        lua-load /usr/local/etc/haproxy/auth-request.lua
+        stats socket /var/lib/haproxy/stats
+        stats timeout 30s
+	daemon
+
+defaults
+        mode    http
+        option  dontlognull
+        timeout connect 5000
+        timeout client  50000
+        timeout server  50000
+        stats enable
+        stats uri /stats
+        stats realm Haproxy\ Statistics
+
+frontend http                               
+  bind *:80
+  acl existing-uniq-id req.hdr(Authorization) -m found
+  http-request auth if !existing-uniq-id
+  http-request lua.auth-request VAULT_ADDRESS VAULT_CREDS_PATH    ### vault address and credentials path
+  http-request deny if ! { var(txn.auth_response_successful) -m bool }
+
+  acl is_flask path_beg /hello
+  use_backend be_flask if is_flask
+
+
+backend be_flask
+  server flask_server FLASK_APP check    ### flask application address
+
