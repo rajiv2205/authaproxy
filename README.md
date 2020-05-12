@@ -69,7 +69,7 @@ I ran the following tests:
 
 ![Stats Success](/images/hello-success.png)
 
-When you don't pass credentials, it will give 401. Incase of wrong credentials, it will give 403. 
+When you don't pass credentials, it will give 401. Incase of wrong credentials, it will give 403. Give it a try from your browser as well.
 
 
 You can update/create credentials in the 'create-creds/payload.json' file and execute the following command at runtime:
@@ -79,9 +79,9 @@ $ make run-creds-gen
 
 ```
 
-###### Note: 
+##### Note: 
 
-You can modify the vault token/creds-path in Makefile as per your requirement.
+You can modify the vault-token or credentials path in the Makefile as per your requirement. To update the changes destroy containers and recreate them with make.
 
 
 ## Built With
