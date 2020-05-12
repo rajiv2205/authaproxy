@@ -2,6 +2,9 @@
 
 Added capability to use Vault for BasicAuth in HaProxy. No more need to put passwords in the haproxy configuration. Keep your credentials in Vault and HaProxy will work with vault to validate a user.
 
+![Overview](/images/authaproxy-main.png)
+
+
 ## Getting Started
 
 authaproxy uses lua to communicate with Vault at runtime. Follow the README to run it on your development machine or on your laptop. 
@@ -61,13 +64,13 @@ I ran the following tests:
 ![Stats Success](/images/success-stats.png)
 
 
-![Stats Success](/images/wrong-stats.png)
+![Stats Incorrect](/images/wrong-stats.png)
 
 
-![Stats Success](/images/401-stats.png)
+![Stats 401](/images/401-stats.png)
 
 
-![Stats Success](/images/hello-success.png)
+![Hello Success](/images/hello-success.png)
 
 When you don't pass credentials, it will give 401. Incase of wrong credentials, it will give 403. Give it a try from your browser as well.
 
